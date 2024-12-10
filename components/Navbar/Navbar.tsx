@@ -11,8 +11,8 @@ function Navbar() {
           </Link>
         </h1>
 
-        <ul className="flex gap-[20px] text-[1rem] text-[#3a3a3a]">
-          <li>
+        <ul className="flex gap-[20px] text-[1rem] text-[#3a3a3a] sm:items-center">
+          <li className="sm:hidden">
             <Link href="/youTube" className="hover:text-[#407bff]">
               YouTube
             </Link>
