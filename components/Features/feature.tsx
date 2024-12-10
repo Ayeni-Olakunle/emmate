@@ -18,7 +18,7 @@ export default function Features() {
               quality. Y2mate supports downloading all video formats such as:
               MP4, M4V, 3GP, WMV, FLV, MO, MP3, WEBM, etc. You can easily
               download for free thousands of videos from YouTube and other
-              websites.{" "}
+              websites.
             </p>
           </div>
         </div>
@@ -34,11 +34,11 @@ export default function Features() {
             convert
           </p>
           <p className="text-[gray]">
-            2. Click "Start" button to begin converting process
+            2. Click &quot;Start&quot; button to begin converting process
           </p>
           <p className="text-[gray]">
             3. Select the video/audio format you want to download, then click
-            "Download" button
+            &quot;Download&quot; button
           </p>
         </div>
 

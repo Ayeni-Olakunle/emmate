@@ -42,14 +42,14 @@ export default function FormInput() {
     },
   ];
 
-  const audioOptions: DownloadOption[] = [
-    {
-      format: "MP3",
-      quality: "128kbps",
-      size: "2.7 MB",
-      action: () => handleDownload("mp3", "someAudioId"),
-    },
-  ];
+  // const audioOptions: DownloadOption[] = [
+  //   {
+  //     format: "MP3",
+  //     quality: "128kbps",
+  //     size: "2.7 MB",
+  //     action: () => handleDownload("mp3", "someAudioId"),
+  //   },
+  // ];
   return (
     <section>
       <div className="max-w-[55rem] mx-auto px-4">
