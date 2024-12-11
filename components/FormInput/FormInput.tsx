@@ -20,7 +20,7 @@ export default function FormInput() {
   const [load, setLoad] = useState(false);
   const [type, setType] = useState("Video");
 
-  const fetchData = async (e: any) => {
+  const fetchData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoad(true);
     try {
