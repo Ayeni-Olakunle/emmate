@@ -1,55 +1,41 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { IoMdCloudDownload } from "react-icons/io";
 import { FaPhotoVideo } from "react-icons/fa";
 import { IoIosMusicalNotes } from "react-icons/io";
+import axios from "axios";
 
-interface DownloadOption {
-  format: string;
-  quality: string;
-  size: string;
-  action: () => void;
+interface youTube {
+  thumb: string;
+  title: string;
+  audio: string;
+  video: string;
+  video_hd: string;
 }
 
 export default function FormInput() {
-  const handleDownload = (type: string, id: string) => {
-    console.log(`Starting download for type: ${type}, id: ${id}`);
+  const [data, setData] = useState<youTube>();
+  const [url, setUrl] = useState("");
+  const [load, setLoad] = useState(false);
+  const [type, setType] = useState("Video");
+
+  const fetchData = async (e: any) => {
+    e.preventDefault();
+    setLoad(true);
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BaseURL}/download/youtube?url=${url}`
+      );
+      console.log(response.data.data);
+      setData(response.data.data);
+      setLoad(false);
+    } catch (error) {
+      console.error(error);
+      setLoad(false);
+    }
   };
 
-  const videoOptions: DownloadOption[] = [
-    {
-      format: "MP4",
-      quality: "auto quality",
-      size: "N/A",
-      action: () => handleDownload("mp4", "someId1"),
-    },
-    {
-      format: "360p (.mp4)",
-      quality: "360p",
-      size: "N/A",
-      action: () => handleDownload("mp4", "someId2"),
-    },
-    {
-      format: "720p (.mp4)",
-      quality: "720p",
-      size: "36.3 MB",
-      action: () => handleDownload("mp4", "someId3"),
-    },
-    {
-      format: "1080p (.mp4)",
-      quality: "1080p HD",
-      size: "62.8 MB",
-      action: () => handleDownload("mp4", "someId4"),
-    },
-  ];
-
-  // const audioOptions: DownloadOption[] = [
-  //   {
-  //     format: "MP3",
-  //     quality: "128kbps",
-  //     size: "2.7 MB",
-  //     action: () => handleDownload("mp3", "someAudioId"),
-  //   },
-  // ];
   return (
     <section>
       <div className="max-w-[55rem] mx-auto px-4">
@@ -63,9 +49,7 @@ export default function FormInput() {
               <div className="w-full">
                 <form
                   className="w-full flex justify-center items-center flex-col gap-[10px]"
-                  action="/en948"
-                  id="search-form"
-                  name="mc-embedded-subscribe-form"
+                  onSubmit={fetchData}
                 >
                   <div className="w-4/5 flex justify-between items-center border-[5px] border-solid border-[#407bff] rounded-[2px] sm:w-full">
                     <input
@@ -73,104 +57,141 @@ export default function FormInput() {
                       id="txt-url"
                       name="query"
                       type="text"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      required
                       placeholder="Search or paste link here..."
                     />
 
                     <button
-                      title="Start"
-                      type="button"
-                      value="Start"
-                      aria-label="Start"
-                      id="btn-submit"
                       className="bg-[#407bff] px-[40px] py-[15px] text-[white]"
+                      type="submit"
                     >
-                      <span className="hidden-xs">Start </span>{" "}
-                      <span className="glyphicon glyphicon-arrow-right"></span>
+                      Start
                     </button>
                   </div>
-                  <div></div>
 
-                  {/* <p className="small">
-                    By using our service you are accepting our{" "}
-                    <a
-                      className="active"
-                      href="/en948/terms-of-service"
-                      target="_blank"
-                    >
-                      Terms of Use
-                    </a>
-                    .{" "}
-                  </p> */}
-
-                  {/* <img
-                    id="loading_img"
-                    src="//www.y2mate.com/themes/images/loading.gif"
-                  /> */}
+                  {load && (
+                    <img
+                      id="loading_img"
+                      src="//www.y2mate.com/themes/images/loading.gif"
+                    />
+                  )}
                 </form>
               </div>
               <div id="ads_spot1"> </div>
 
-              <div className="w-full">
-                <div className="flex justify-between items-start gap-[20px] sm:flex-col">
-                  <div className="w-2/5 md:w-full">
-                    <div className="thumbnail cover">
-                      <img
-                        src="https://i.ytimg.com/vi/5yZ85Jt5jTI/0.jpg"
-                        alt="YouTube Downloader thumbnail"
-                      />
-                      <div className="caption text-left">
-                        <b>Pastor Remote is high here 🤣🤣🤣</b>
+              {data && (
+                <div className="w-full">
+                  <div className="flex justify-between items-start gap-[20px] sm:flex-col">
+                    <div className="w-2/5 md:w-full">
+                      <div className="thumbnail cover">
+                        <img
+                          src={data.thumb}
+                          alt="YouTube Downloader thumbnail"
+                        />
+                        <div className="caption text-left">
+                          <b>{data.title}</b>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="w-3/5 md:w-full">
-                    <div className="flex">
-                      <button className="flex gap-[10px] justify-start items-center bg-[#407bff] px-[20px] py-[10px] text-[white]">
-                        <FaPhotoVideo /> Video
-                      </button>
-                      <button className="flex gap-[10px] justify-start items-center bg-[white] px-[20px] py-[10px] text-[#407bff]">
-                        <IoIosMusicalNotes /> Music
-                      </button>
-                    </div>
+                    <div className="w-3/5 md:w-full">
+                      <div className="flex">
+                        <button
+                          className={`flex gap-[10px] justify-start items-center ${
+                            type === "Video"
+                              ? "text-[white] bg-[#407bff]"
+                              : "text-[#407bff] bg-[white]"
+                          }  px-[20px] py-[10px]`}
+                          onClick={() => setType("Video")}
+                        >
+                          <FaPhotoVideo /> Video
+                        </button>
+                        <button
+                          className={`flex gap-[10px] justify-start items-center ${
+                            type === "Music"
+                              ? "text-[white] bg-[#407bff]"
+                              : "text-[#407bff] bg-[white]"
+                          }  px-[20px] py-[10px]`}
+                          onClick={() => setType("Music")}
+                        >
+                          <IoIosMusicalNotes /> Music
+                        </button>
+                      </div>
 
-                    <div className="tab-content">
-                      {/* Video Tab */}
-                      <div
-                        // className="border-[1px] border-solid border-[#e4e4e4]"
-                        id="mp4"
-                      >
-                        <table className="w-full">
-                          <tbody>
-                            {videoOptions.map((option, index) => (
-                              <tr
-                                key={index}
-                                // className="[border-bottom:1px_solid_#e4e4e4]"
-                              >
-                                <td className="p-[10px] text-[15px] text-[gray]">
-                                  {option.quality}
-                                </td>
-                                <td className="text-center text-[13px] text-[gray]">
-                                  {option.size}
-                                </td>
-                                <td className="flex justify-center px-[0] py-[9px]">
-                                  <button
-                                    className="flex gap-[10px] items-center bg-[#407bff] px-[10px] py-[5px] text-[white] rounded-[5px] text-[15px]"
-                                    // onClick={option.action}
-                                  >
-                                    <IoMdCloudDownload />
-                                    Download
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                      <div className="tab-content">
+                        <div id="mp4">
+                          {type === "Music" && (
+                            <table className="w-full">
+                              <tbody>
+                                <tr>
+                                  <td className="p-[10px] text-[15px] text-[gray]">
+                                    360p
+                                  </td>
+                                  <td className="text-center text-[13px] text-[gray]">
+                                    Null
+                                  </td>
+                                  <td className="flex justify-center px-[0] py-[9px]">
+                                    <a
+                                      href={data.audio}
+                                      className="flex gap-[10px] items-center bg-[#407bff] px-[10px] py-[5px] text-[white] rounded-[5px] text-[15px]"
+                                    >
+                                      <IoMdCloudDownload />
+                                      Download
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          )}
+
+                          {type === "Video" && (
+                            <table className="w-full">
+                              <tbody>
+                                <tr>
+                                  <td className="p-[10px] text-[15px] text-[gray]">
+                                    360p
+                                  </td>
+                                  <td className="text-center text-[13px] text-[gray]">
+                                    Null
+                                  </td>
+                                  <td className="flex justify-center px-[0] py-[9px]">
+                                    <a
+                                      href={data.video}
+                                      className="flex gap-[10px] items-center bg-[#407bff] px-[10px] py-[5px] text-[white] rounded-[5px] text-[15px]"
+                                    >
+                                      <IoMdCloudDownload />
+                                      Download
+                                    </a>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td className="p-[10px] text-[15px] text-[gray]">
+                                    720p
+                                  </td>
+                                  <td className="text-center text-[13px] text-[gray]">
+                                    Null
+                                  </td>
+                                  <td className="flex justify-center px-[0] py-[9px]">
+                                    <a
+                                      href={data.video_hd}
+                                      className="flex gap-[10px] items-center bg-[#407bff] px-[10px] py-[5px] text-[white] rounded-[5px] text-[15px]"
+                                    >
+                                      <IoMdCloudDownload />
+                                      Download
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
